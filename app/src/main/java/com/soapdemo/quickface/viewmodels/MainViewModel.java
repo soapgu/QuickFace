@@ -1,6 +1,7 @@
 package com.soapdemo.quickface.viewmodels;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -10,10 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.Bindable;
 import androidx.databinding.library.baseAdapters.BR;
+import androidx.lifecycle.MutableLiveData;
 
 import com.arcsoft.face.ActiveFileInfo;
 import com.arcsoft.face.ErrorInfo;
 import com.arcsoft.face.FaceEngine;
+import com.soapdemo.quickface.activitys.RecognizeActivity;
 import com.soapdemo.quickface.util.ErrorCodeUtil;
 import com.soapdemo.quickface.util.Execute;
 import com.soapdemo.quickface.util.MessageHelper;
@@ -28,6 +31,8 @@ import java.util.List;
 public class MainViewModel extends ObservableViewModel {
     private final String DEFAULT_AUTH_FILE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "active_result.dat";
     private String activateStatus;
+    private MutableLiveData<Class<?>> targetActivity;
+
 
     /**
      * 离线激活所需的所有权限信息
@@ -41,9 +46,15 @@ public class MainViewModel extends ObservableViewModel {
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        String activeMsg = checkPermissions(NEEDED_PERMISSIONS) ? ( activeMsg = isActivated()  ? "已激活": "未激活" ) : "READ_PHONE_STATE 权限未获取";
+        String activeMsg = checkPermissions(NEEDED_PERMISSIONS) ? ( isActivated()  ? "已激活": "未激活" ) : "READ_PHONE_STATE 权限未获取";
         String ip = getLocalIpAddress();
         this.setActivateStatus( String.format( "IP:%s 状态:%s" ,  ip, activeMsg ) );
+    }
+
+    public MutableLiveData<Class<?>> getTargetActivity() {
+        if( targetActivity == null )
+            targetActivity = new MutableLiveData<>();
+        return targetActivity;
     }
 
     @Bindable
@@ -88,6 +99,11 @@ public class MainViewModel extends ObservableViewModel {
         }
     }
 
+    public void GoToRecognizeActivity()
+    {
+        this.targetActivity.setValue(RecognizeActivity.class);
+    }
+
     /**
      * 权限检查
      *
@@ -108,7 +124,7 @@ public class MainViewModel extends ObservableViewModel {
     /**
      * 获取本地IP地址
      *
-     * @return
+     * @return IP String
      */
     private static String getLocalIpAddress() {
         try {

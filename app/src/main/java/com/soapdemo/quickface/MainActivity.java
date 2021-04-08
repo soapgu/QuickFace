@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,5 +34,11 @@ public class MainActivity extends AppCompatActivity {
                 .get(MainViewModel.class);
         ActivityMainBinding binding  = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setDataContext(viewModel);
+        //binding.setLifecycleOwner(this);
+        viewModel.getTargetActivity().observe(this, t->{
+            Intent intent = new Intent(this,t);
+            startActivity(intent);
+        });
+
     }
 }

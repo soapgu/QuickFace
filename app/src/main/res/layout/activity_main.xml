@@ -41,6 +41,13 @@
                 android:text="@string/Activate"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/button2"
+                android:onClick="@{()->dataContext.GoToRecognizeActivity()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Recognize" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
